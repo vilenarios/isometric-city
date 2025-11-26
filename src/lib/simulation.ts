@@ -308,7 +308,7 @@ function createInitialStats(): Stats {
   return {
     population: 0,
     jobs: 0,
-    money: 20000,
+    money: 100000,
     income: 0,
     expenses: 0,
     happiness: 50,

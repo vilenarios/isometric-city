@@ -4,6 +4,7 @@ const { withGTConfig } = require("gt-next/config");
 const nextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
+  output: 'export',
 };
 
 module.exports = withGTConfig(nextConfig);

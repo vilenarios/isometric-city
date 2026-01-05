@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Playfair_Display, DM_Sans } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { getLocale } from "gt-next/server";
 import { GTProvider } from "gt-next";
@@ -20,7 +19,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://iso-city.com'),
+  metadataBase: new URL('https://iso-city.ar.io'),
   title: {
     default: 'ISOCITY — Metropolis Builder',
     template: 'ISOCITY — %s',
@@ -84,7 +83,7 @@ export default async function RootLayout({ children }: {children: React.ReactNod
         type="image/webp" />
 
       </head>
-      <body className="bg-background text-foreground antialiased font-sans overflow-hidden"><GTProvider>{children}<Analytics /></GTProvider></body>
+      <body className="bg-background text-foreground antialiased font-sans overflow-hidden"><GTProvider>{children}</GTProvider></body>
     </html>
   );
 }

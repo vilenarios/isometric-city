@@ -1,6 +1,11 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+
+// Required for static export - room codes are dynamic at runtime
+export function generateStaticParams() {
+  return [];
+}
 import { GameProvider } from '@/context/GameContext';
 import { MultiplayerContextProvider } from '@/context/MultiplayerContext';
 import Game from '@/components/Game';

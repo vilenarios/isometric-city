@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+// Force static generation - search params will be read client-side
+export const dynamic = 'force-static';
+
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 interface OGData {
@@ -92,7 +95,7 @@ function DiscordCard({ og }: { og: OGData }) {
   );
 }
 
-export default function ThumbnailPreview() {
+function ThumbnailPreviewContent() {
   const searchParams = useSearchParams();
   const [inputUrl, setInputUrl] = useState('');
   const [og, setOG] = useState<OGData | null>(null);
@@ -151,8 +154,8 @@ export default function ThumbnailPreview() {
 
   const quickLinks = [
     { label: 'Homepage', path: '/' },
-    { label: 'Co-op ABC12', path: '/coop/ABC12' },
-    { label: 'Co-op XYZ99', path: '/coop/XYZ99' },
+    { label: 'Co-op ABC12', path: '/coop?room=ABC12' },
+    { label: 'Co-op XYZ99', path: '/coop?room=XYZ99' },
   ];
 
   return (
@@ -250,5 +253,24 @@ export default function ThumbnailPreview() {
         )}
       </div>
     </div>
+  );
+}
+
+function ThumbnailLoading() {
+  return (
+    <div className="min-h-screen bg-gray-950 text-white p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-2">OG Image Preview</h1>
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ThumbnailPreview() {
+  return (
+    <Suspense fallback={<ThumbnailLoading />}>
+      <ThumbnailPreviewContent />
+    </Suspense>
   );
 }

@@ -1,18 +1,16 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+// Force static generation - search params will be read client-side
+export const dynamic = 'force-static';
 
-// Required for static export - room codes are dynamic at runtime
-export function generateStaticParams() {
-  return [];
-}
+import React, { useState, useRef, Suspense } from 'react';
 import { GameProvider } from '@/context/GameContext';
 import { MultiplayerContextProvider } from '@/context/MultiplayerContext';
 import Game from '@/components/Game';
 import { CoopModal } from '@/components/multiplayer/CoopModal';
 import { GameState } from '@/types/game';
 import { compressToUTF16 } from 'lz-string';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const STORAGE_KEY = 'isocity-game-state';
 const SAVED_CITIES_INDEX_KEY = 'isocity-saved-cities-index';
@@ -23,7 +21,7 @@ function saveCityToIndex(state: GameState, roomCode?: string): void {
   try {
     const saved = localStorage.getItem(SAVED_CITIES_INDEX_KEY);
     const cities = saved ? JSON.parse(saved) : [];
-    
+
     const cityMeta = {
       id: state.id || `city-${Date.now()}`,
       cityName: state.cityName || 'Co-op City',
@@ -35,32 +33,33 @@ function saveCityToIndex(state: GameState, roomCode?: string): void {
       savedAt: Date.now(),
       roomCode: roomCode,
     };
-    
-    const existingIndex = cities.findIndex((c: { id: string; roomCode?: string }) => 
+
+    const existingIndex = cities.findIndex((c: { id: string; roomCode?: string }) =>
       c.id === cityMeta.id || (roomCode && c.roomCode === roomCode)
     );
-    
+
     if (existingIndex >= 0) {
       cities[existingIndex] = cityMeta;
     } else {
       cities.unshift(cityMeta);
     }
-    
+
     localStorage.setItem(SAVED_CITIES_INDEX_KEY, JSON.stringify(cities.slice(0, 20)));
   } catch (e) {
     console.error('Failed to save city to index:', e);
   }
 }
 
-export default function CoopPage() {
-  const params = useParams();
+// Inner component that uses useSearchParams (must be wrapped in Suspense)
+function CoopPageContent() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const roomCode = (params.roomCode as string)?.toUpperCase();
-  
+  const roomCode = searchParams.get('room')?.toUpperCase() || '';
+
   const [showGame, setShowGame] = useState(false);
   const [showCoopModal, setShowCoopModal] = useState(true);
   const [startFreshGame, setStartFreshGame] = useState(false);
-  
+
   // Ref to track that we're intentionally starting the game (not closing to go home)
   const isStartingGameRef = useRef(false);
 
@@ -73,7 +72,7 @@ export default function CoopPage() {
   const handleCoopStart = (isHost: boolean, initialState?: GameState, code?: string) => {
     // Mark that we're intentionally starting the game (not closing to go home)
     isStartingGameRef.current = true;
-    
+
     if (isHost && initialState) {
       try {
         const compressed = compressToUTF16(JSON.stringify(initialState));
@@ -101,7 +100,7 @@ export default function CoopPage() {
     } else {
       setStartFreshGame(true);
     }
-    
+
     setShowGame(true);
     setShowCoopModal(false);
   };
@@ -139,5 +138,23 @@ export default function CoopPage() {
         />
       </main>
     </MultiplayerContextProvider>
+  );
+}
+
+// Loading fallback for Suspense
+function CoopLoading() {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+      <div className="text-white text-lg">Loading...</div>
+    </main>
+  );
+}
+
+// Main page component with Suspense boundary for useSearchParams
+export default function CoopPage() {
+  return (
+    <Suspense fallback={<CoopLoading />}>
+      <CoopPageContent />
+    </Suspense>
   );
 }

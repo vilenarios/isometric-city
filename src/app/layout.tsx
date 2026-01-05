@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Playfair_Display, DM_Sans } from 'next/font/google';
 import './globals.css';
-import { getLocale } from "gt-next/server";
 import { GTProvider } from "gt-next";
 
 const playfair = Playfair_Display({
@@ -63,9 +62,9 @@ export const viewport: Viewport = {
   themeColor: '#0f1219'
 };
 
-export default async function RootLayout({ children }: {children: React.ReactNode;}) {
+export default function RootLayout({ children }: {children: React.ReactNode;}) {
   return (
-  <html className={`dark ${playfair.variable} ${dmSans.variable}`} lang={await getLocale()}>
+  <html className={`dark ${playfair.variable} ${dmSans.variable}`} lang="en">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/assets/buildings/residential.png" />

@@ -65,7 +65,7 @@ export function CoopModal({
       // Join immediately - state will be loaded from Supabase database
       joinRoom(pendingRoomCode)
         .then(() => {
-          window.history.replaceState({}, '', `/coop/${pendingRoomCode.toUpperCase()}`);
+          window.history.replaceState({}, '', `/coop?room=${pendingRoomCode.toUpperCase()}`);
           setIsLoading(false);
           setWaitingForState(true);
         })
@@ -107,7 +107,7 @@ export function CoopModal({
       
       const code = await createRoom(cityName, stateToShare);
       // Update URL to show room code
-      window.history.replaceState({}, '', `/coop/${code}`);
+      window.history.replaceState({}, '', `/coop?room=${code}`);
       
       // Start the game immediately with the state and close the modal
       onStartGame(true, stateToShare, code);
@@ -128,7 +128,7 @@ export function CoopModal({
       // State will be loaded from Supabase database
       await joinRoom(joinCode);
       // Update URL to show room code
-      window.history.replaceState({}, '', `/coop/${joinCode.toUpperCase()}`);
+      window.history.replaceState({}, '', `/coop?room=${joinCode.toUpperCase()}`);
       // Now wait for state to be received from provider
       setIsLoading(false);
       setWaitingForState(true);
@@ -168,7 +168,7 @@ export function CoopModal({
   const handleCopyLink = () => {
     if (!roomCode) return;
     
-    const url = `${window.location.origin}/coop/${roomCode}`;
+    const url = `${window.location.origin}/coop?room=${roomCode}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -221,7 +221,7 @@ export function CoopModal({
                   setIsLoading(true);
                   joinRoom(pendingRoomCode)
                     .then(() => {
-                      window.history.replaceState({}, '', `/coop/${pendingRoomCode.toUpperCase()}`);
+                      window.history.replaceState({}, '', `/coop?room=${pendingRoomCode.toUpperCase()}`);
                       setIsLoading(false);
                       setWaitingForState(true);
                     })

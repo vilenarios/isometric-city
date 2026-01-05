@@ -1,5 +1,3 @@
-const { withGTConfig } = require("gt-next/config");
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -7,4 +5,4 @@ const nextConfig = {
   output: 'export',
 };
 
-module.exports = withGTConfig(nextConfig);
+module.exports = nextConfig;

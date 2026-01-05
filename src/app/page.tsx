@@ -338,8 +338,8 @@ export default function HomePage() {
       const params = new URLSearchParams(window.location.search);
       const roomCode = params.get('room');
       if (roomCode && roomCode.length === 5) {
-        // Redirect to new /coop/XXXXX format
-        window.location.replace(`/coop/${roomCode.toUpperCase()}`);
+        // Redirect to /coop?room=XXXXX format
+        window.location.replace(`/coop?room=${roomCode.toUpperCase()}`);
         return;
       }
       // Always show landing page - don't auto-load into game
@@ -364,7 +364,7 @@ export default function HomePage() {
   const loadSavedCity = (city: SavedCityMeta) => {
     // If it's a multiplayer city, navigate to the room
     if (city.roomCode) {
-      window.history.replaceState({}, '', `/coop/${city.roomCode}`);
+      window.history.replaceState({}, '', `/coop?room=${city.roomCode}`);
       setPendingRoomCode(city.roomCode);
       setShowCoopModal(true);
       return;
